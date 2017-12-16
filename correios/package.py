@@ -12,6 +12,7 @@ class Package(object):
         set_height()
         set_width()
         set_length()
+        set_diameter()
 
     def get_format():
         return self.format
