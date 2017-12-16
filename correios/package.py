@@ -7,42 +7,43 @@ class Package(object):
     FORMAT_CYLINDER = 2
     FORMAT_ENVELOPE = 3
 
-    def __init__(self, format = self.FORMAT_BOX):
-        self.format = format
-        set_height()
-        set_width()
-        set_length()
-        set_diameter()
+    def __init__(self, format = None):
+        self.format = format or self.FORMAT_BOX
 
-    def get_format():
+        self.set_height()
+        self.set_width()
+        self.set_length()
+        self.set_diameter()
+
+    def get_format(self):
         return self.format
 
-    def set_height(height = 0.0):
+    def set_height(self, height = 0.0):
         self.height = float(height)
 
-    def get_height():
+    def get_height(self):
         return self.height
 
-    def set_width(width = 0.0):
+    def set_width(self, width = 0.0):
         self.width = float(width)
 
-    def get_width():
+    def get_width(self):
         return self.width
 
-    def set_length(length = 0.0):
+    def set_length(self, length = 0.0):
         self.length = float(length)
 
-    def get_length():
+    def get_length(self):
         return self.length
 
-    def set_diameter(diameter = 0.0):
+    def set_diameter(self, diameter = 0.0):
         self.diameter = diameter
 
-    def get_diameter():
+    def get_diameter(self):
         return self.diameter
 
-    def set_weight(weight = 0.0):
+    def set_weight(self, weight = 0.0):
         self.weight = weight
 
-    def get_weight():
+    def get_weight(self):
         return self.weight
