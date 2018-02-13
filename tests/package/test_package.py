@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from correios.package import Package, BoxPackage
+from correios.package import Package, BoxPackage, CylinderPackage
 
 class TestPackage(unittest.TestCase):
 
@@ -178,18 +178,135 @@ class TestBoxPackage(unittest.TestCase):
 
         self.assertEqual(weight0 + weight1,package.get_weight())
     
-    def test_check_for_valid_package_with_valid_dimensions(self):
+    def test_check_for_valid_box_package_with_valid_dimensions(self):
         package = BoxPackage()
         package.add_item(15.0,20.0,35.0,1.2)
         self.assertTrue(package.is_valid())
     
-    def test_check_for_valid_package_with_exceeded_dimensions(self):
+    def test_check_for_valid_box_package_with_exceeded_dimensions(self):
         package = BoxPackage()
         package.add_item(BoxPackage.MAX_HEIGHT+1.0,BoxPackage.MAX_WIDTH+1.0,BoxPackage.MAX_DEPTH+1.0,2.0)
         self.assertFalse(package.is_valid())
     
-    def test_check_for_valid_package_with_exceeded_volume(self):
+    def test_check_for_valid_box_package_with_exceeded_volume(self):
         package = BoxPackage()
         package.add_item(100.0,100.0,100.0,5.0)
         self.assertFalse(package.is_valid())
 
+class TestCylinderPackage(unittest.TestCase):
+
+    def setUp(self):
+        pass
+    
+    def test_create_cylinder_package(self):
+        package = CylinderPackage()
+        self.assertEqual(Package.FORMAT_CYLINDER,package.get_format())
+    
+    def test_add_single_item_to_cylinder_package(self):
+        length = 5.0
+        diameter = 1.0
+        weight = 0.5
+
+        package = CylinderPackage()
+        package.add_item(length,diameter,weight)
+
+        self.assertTrue(package.has_items())
+        self.assertEqual(length,package.get_items()[0].length)
+        self.assertEqual(diameter,package.get_items()[0].diameter)
+        self.assertEqual(weight,package.get_items()[0].weight)
+    
+    def test_add_multiple_items_to_cylinder_package(self):
+        length0 = 5.0
+        diameter0 = 1.0
+        weight0 = 0.3
+
+        length1 = 10.0
+        diameter1 = 2.0
+        weight1 = 0.5
+
+        package = CylinderPackage()
+        package.add_item(length0,diameter0,weight0)
+        package.add_item(length1,diameter1,weight1)
+
+        self.assertTrue(package.has_items())
+
+        self.assertEqual(length0,package.get_items()[0].length)
+        self.assertEqual(diameter0,package.get_items()[0].diameter)
+        self.assertEqual(weight0,package.get_items()[0].weight)
+
+        self.assertEqual(length1,package.get_items()[1].length)
+        self.assertEqual(diameter1,package.get_items()[1].diameter)
+        self.assertEqual(weight1,package.get_items()[1].weight)
+    
+    def test_get_dimensions_for_single_item_cylinder_package_with_minimum_dimensions(self):
+        length = 5.0
+        diameter = 1.0
+
+        package = CylinderPackage()
+        package.add_item(length,diameter,0.5)
+
+        dimensions = package.get_dimensions()
+        self.assertTupleEqual(dimensions,(CylinderPackage.MIN_LENGTH,CylinderPackage.MIN_DIAMETER))
+    
+    def test_get_dimensions_for_single_item_cylinder_package_with_dimensions_over_the_minimum(self):
+        length = 60.0
+        diameter = 10.0
+
+        package = CylinderPackage()
+        package.add_item(length,diameter,2.0)
+
+        dimensions = package.get_dimensions()
+        self.assertTupleEqual(dimensions,(length,diameter))
+    
+    def test_get_dimensions_for_multiple_items_cylinder_package_with_minimum_dimensions(self):
+        length0 = 5.0
+        diameter0 = 1.0
+
+        length1 = 10.0
+        diameter1 = 2.0
+
+        package = CylinderPackage()
+        package.add_item(length0,diameter0,0.5)
+        package.add_item(length1,diameter1,0.8)
+
+        dimensions = package.get_dimensions()
+        self.assertTupleEqual(dimensions,(CylinderPackage.MIN_LENGTH,CylinderPackage.MIN_DIAMETER))
+    
+    def test_get_dimensions_for_multiple_items_cylinder_package_with_dimensions_over_the_minimum(self):
+        length0 = 25.0
+        diameter0 = 5.0
+
+        length1 = 30.0
+        diameter1 = 12.0
+
+        package = CylinderPackage()
+        package.add_item(length0,diameter0,0.5)
+        package.add_item(length1,diameter1,0.8)
+
+        dimensions = package.get_dimensions()
+        self.assertTupleEqual(dimensions,(length0 + length1,diameter1))
+    
+    def test_get_weight_of_cylinder_package(self):
+        weight0 = 5.0
+        weight1 = 12.5
+
+        package = CylinderPackage()
+        package.add_item(1.0,2.0,weight0)
+        package.add_item(2.0,3.0,weight1)
+
+        self.assertEqual(package.get_weight(),weight0 + weight1)
+    
+    def test_check_for_valid_cylinder_package_with_valid_dimensions(self):
+        package = CylinderPackage()
+        package.add_item(40.0,10.0,0.5)
+        self.assertTrue(package.is_valid())
+    
+    def test_check_for_valid_cylinder_package_with_exceeded_dimensions(self):
+        package = CylinderPackage()
+        package.add_item(150.0,2.0,0.5)
+        self.assertFalse(package.is_valid())
+    
+    def test_check_for_valid_cylinder_package_with_exceeded_volume(self):
+        package = CylinderPackage()
+        package.add_item(102.0,50.0,1.0)
+        self.assertFalse(package.is_valid())

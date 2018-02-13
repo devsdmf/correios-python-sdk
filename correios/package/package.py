@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from functools import reduce
-from . import BoxItem
+from . import BoxItem, CylinderItem
 
 class Package(object):
 
@@ -83,3 +83,29 @@ class BoxPackage(Package):
 
         return True if height <= self.MAX_HEIGHT and width <= self.MAX_WIDTH \
                     and depth <= self.MAX_DEPTH and volume <= self.MAX_VOLUME else False
+
+class CylinderPackage(Package):
+
+    MIN_LENGTH   = 18.0
+    MIN_DIAMETER = 5.0
+    MAX_LENGTH   = 105.0
+    MAX_DIAMETER = 91.0
+    MAX_VOLUME   = 200.0
+
+    def __init__(self):
+        Package.__init__(self,Package.FORMAT_CYLINDER)
+
+    def add_item(self, length, diameter, weight):
+        return self.items.append(CylinderItem(length,diameter,weight))
+    
+    def get_dimensions(self):
+        diameter = max(list(map(lambda i: i.diameter, self.items)) + [self.MIN_DIAMETER])
+        length = max([reduce(lambda s,i: s + i.length, self.items, 0),self.MIN_LENGTH])
+        return (length,diameter)
+    
+    def is_valid(self):
+        length, diameter = self.get_dimensions()
+        volume = length + (2 * diameter)
+
+        return True if length <= self.MAX_LENGTH and diameter <= self.MAX_DIAMETER \
+                    and volume <= self.MAX_VOLUME else False
