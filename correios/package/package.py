@@ -31,33 +31,57 @@ class Package(object):
     def get_format(self):
         return self.format
 
-    def add_item(self, height = 0.0, width = 0.0, depth = 0.0, weight = 0.0):
-        self.items.append(Item(height,width,depth,weight))
-        return 
+    def add_item(self, height, width, depth, weight):
+        if (width <= 0.0):
+            raise Exception('The width parameter cannot be zero, please specify a value greater than zero')
+        elif (depth <= 0.0):
+            raise Exception('The depth parameter cannot be zero, please specify a value greater than zero')
+        elif (self.format is not Package.FORMAT_ENVELOPE and height <= 0.0):
+            raise Exception('The height parameter cannot be zero, please, specify a value greater than zero')
+        elif (self.format is Package.FORMAT_ENVELOPE and height > 0.0):
+            raise Exception('The "envelope" format only accepts zeroed height values')
+
+        return self.items.append(Item(height,width,depth,weight))
+    
+    def has_items(self): 
+        return True if len(self.items) > 0 else False
 
     def get_items(self):
         return self.items
     
     def get_dimensions(self):
-        items = []
+        if len(self.items) > 1:
+            items = []
 
-        for item in self.items:
-            dimensions = sorted([item.height,item.width,item.depth])
-            items.append(Item(
-                height=dimensions[0],
-                width=dimensions[1],
-                depth=dimensions[2],
-                weight=item.weight
-            ))
+            for item in self.items:
+                dimensions = sorted([item.height,item.width,item.depth])
+                items.append(Item(
+                    height=dimensions[0],
+                    width=dimensions[1],
+                    depth=dimensions[2],
+                    weight=item.weight
+                ))
 
-        shadow = {
-            'height': max(list(map(lambda i: i.height, items)) + [self.MIN_HEIGHT]),
-            'width': max(list(map(lambda i: i.width, items)) + [self.MIN_WIDTH]),
-            'depth': max(list(map(lambda i: i.depth, items)) + [self.MIN_DEPTH])
-        }
+            shadow = {
+                'height': max(list(map(lambda i: i.height, items)) + [self.MIN_HEIGHT]),
+                'width': max(list(map(lambda i: i.width, items)) + [self.MIN_WIDTH]),
+                'depth': max(list(map(lambda i: i.depth, items)) + [self.MIN_DEPTH])
+            }
 
-        dimension = [k for k,v in shadow.items() if v==min(shadow.values())][0]
-        shadow[dimension] = reduce(lambda s,i: s + getattr(i,dimension),items,0)
+            dimension = [k for k,v in shadow.items() if v==min(shadow.values())][0]
+            shadow[dimension] = reduce(lambda s,i: s + getattr(i,dimension),items,0)
+        else:
+            items = self.items
+            item = items.pop()
+            
+            shadow = {
+                'height': max([item.height,self.MIN_HEIGHT]),
+                'width': max([item.width,self.MIN_WIDTH]),
+                'depth': max([item.depth,self.MIN_DEPTH])
+            }
+
+        if (self.format == self.FORMAT_ENVELOPE):
+            shadow['height'] = 0.0
 
         return tuple(shadow.values())
     
@@ -67,6 +91,7 @@ class Package(object):
     def is_valid(self):
         height, width, depth = self.get_dimensions()
         volume = height + width + depth
+        # max weight for envelope is 1kg
 
         return True if height <= self.MAX_HEIGHT and width <= self.MAX_WIDTH \
                     and depth <= self.MAX_DEPTH and volume <= self.MAX_VOLUME else False
