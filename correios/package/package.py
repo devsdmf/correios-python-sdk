@@ -36,6 +36,9 @@ class Package(object):
     
     def is_valid(self):
         raise NotImplementedError
+    
+    def api_format(self):
+        raise NotImplementedError
 
 class BoxPackage(Package):
 
@@ -83,6 +86,19 @@ class BoxPackage(Package):
 
         return True if height <= self.MAX_HEIGHT and width <= self.MAX_WIDTH \
                     and depth <= self.MAX_DEPTH and volume <= self.MAX_VOLUME else False
+    
+    def api_format(self):
+        if self.is_valid():
+            height, width, depth = self.get_dimensions()
+            return {
+                'nCdFormato': self.get_format(),
+                'nVlAltura': height,
+                'nVlLargura': width,
+                'nVlComprimento': depth,
+                'nVlPeso': self.get_weight()
+            }
+        else:
+            raise Exception('The current package is not a valid package due to some validation constraints')
 
 class CylinderPackage(Package):
 
@@ -109,6 +125,18 @@ class CylinderPackage(Package):
 
         return True if length <= self.MAX_LENGTH and diameter <= self.MAX_DIAMETER \
                     and volume <= self.MAX_VOLUME else False
+    
+    def api_format(self):
+        if self.is_valid():
+            length, diameter = self.get_dimensions()
+            return {
+                'nCdFormato': self.get_format(),
+                'nVlComprimento': length,
+                'nVlDiametro': diameter,
+                'nVlPeso': self.get_weight()
+            }
+        else:
+            raise Exception('The current package is not a valid package due to some validation constraints')
 
 class EnvelopePackage(Package):
 
@@ -134,3 +162,16 @@ class EnvelopePackage(Package):
         weight = self.get_weight()
         return True if width <= self.MAX_WIDTH and length <= self.MAX_LENGTH \
                     and weight <= self.MAX_WEIGHT else False
+    
+    def api_format(self):
+        if self.is_valid():
+            width, length = self.get_dimensions()
+            return {
+                'nCdFormato': self.get_format(),
+                'nVlAltura': 0.0,
+                'nVlLargura': width,
+                'nVlComprimento': length,
+                'nVlPeso': self.get_weight()
+            }
+        else:
+            raise Exception('The current package is not a valid package due to some validation constraints')

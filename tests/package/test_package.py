@@ -58,6 +58,11 @@ class TestPackage(unittest.TestCase):
         package = Package()
         with self.assertRaises(NotImplementedError):
             package.is_valid()
+    
+    def test_abstract_api_format_raises_exception(self):
+        package = Package()
+        with self.assertRaises(NotImplementedError):
+            package.api_format()
 
 class TestBoxPackage(unittest.TestCase):
 
@@ -192,6 +197,29 @@ class TestBoxPackage(unittest.TestCase):
         package = BoxPackage()
         package.add_item(100.0,100.0,100.0,5.0)
         self.assertFalse(package.is_valid())
+    
+    def test_api_format_for_valid_box_package(self):
+        height = 15.0
+        width = 20.0
+        depth = 35.0
+        weight = 1.2
+
+        package = BoxPackage()
+        package.add_item(height,width,depth,weight)
+        expected = {
+            'nCdFormato': Package.FORMAT_BOX,
+            'nVlAltura': height,
+            'nVlLargura': width,
+            'nVlComprimento': depth,
+            'nVlPeso': weight
+        }
+        self.assertDictEqual(package.api_format(),expected)
+    
+    def test_api_format_for_invalid_box_package(self):
+        package = BoxPackage()
+        package.add_item(100.0,100.0,100.0,5.0)
+        with self.assertRaises(Exception):
+            package.api_format()
 
 class TestCylinderPackage(unittest.TestCase):
 
@@ -310,6 +338,27 @@ class TestCylinderPackage(unittest.TestCase):
         package = CylinderPackage()
         package.add_item(102.0,50.0,1.0)
         self.assertFalse(package.is_valid())
+    
+    def test_api_format_for_valid_cylinder_package(self):
+        length = 40.0
+        diameter = 10.0
+        weight = 1.0
+
+        package = CylinderPackage()
+        package.add_item(length,diameter,weight)
+        expected = {
+            'nCdFormato': Package.FORMAT_CYLINDER,
+            'nVlComprimento': length,
+            'nVlDiametro': diameter,
+            'nVlPeso': weight
+        }
+        self.assertDictEqual(package.api_format(),expected)
+    
+    def test_api_format_for_invalid_cylinder_package(self):
+        package = CylinderPackage()
+        package.add_item(102.5,50.0,5.0)
+        with self.assertRaises(Exception):
+            package.api_format()
 
 class TestEnvelopePackage(unittest.TestCase):
 
@@ -428,3 +477,25 @@ class TestEnvelopePackage(unittest.TestCase):
         package = EnvelopePackage()
         package.add_item(13.0,25.0,1.2)
         self.assertFalse(package.is_valid())
+    
+    def test_api_format_for_valid_envelope_package(self):
+        width = 13.0
+        length = 25.0
+        weight = 0.5
+
+        package = EnvelopePackage()
+        package.add_item(width,length,weight)
+        expected = {
+            'nCdFormato': Package.FORMAT_ENVELOPE,
+            'nVlAltura': 0.0,
+            'nVlLargura': width,
+            'nVlComprimento': length,
+            'nVlPeso': weight
+        }
+        self.assertDictEqual(package.api_format(),expected)
+    
+    def test_api_format_for_invalid_envelope_package(self):
+        package = EnvelopePackage()
+        package.add_item(65.0,70.0,0.5)
+        with self.assertRaises(Exception):
+            package.api_format()
