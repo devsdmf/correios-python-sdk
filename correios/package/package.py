@@ -116,6 +116,7 @@ class EnvelopePackage(Package):
     MIN_LENGTH = 16.0
     MAX_WIDTH = 60.0
     MAX_LENGTH = 60.0
+    MAX_WEIGHT = 1.0
 
     def __init__(self):
         Package.__init__(self,Package.FORMAT_ENVELOPE)
@@ -130,4 +131,6 @@ class EnvelopePackage(Package):
     
     def is_valid(self):
         width, length = self.get_dimensions()
-        return True if width <= self.MAX_WIDTH and length <= self.MAX_LENGTH else False
+        weight = self.get_weight()
+        return True if width <= self.MAX_WIDTH and length <= self.MAX_LENGTH \
+                    and weight <= self.MAX_WEIGHT else False

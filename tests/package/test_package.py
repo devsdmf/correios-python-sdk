@@ -423,3 +423,8 @@ class TestEnvelopePackage(unittest.TestCase):
         package = EnvelopePackage()
         package.add_item(65.0,70.0,0.5)
         self.assertFalse(package.is_valid())
+    
+    def test_check_for_valid_envelope_package_with_exceeded_weight(self):
+        package = EnvelopePackage()
+        package.add_item(13.0,25.0,1.2)
+        self.assertFalse(package.is_valid())
