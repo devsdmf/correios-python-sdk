@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from functools import reduce
-from . import BoxItem, CylinderItem
+from . import BoxItem, CylinderItem, EnvelopeItem
 
 class Package(object):
 
@@ -109,3 +109,25 @@ class CylinderPackage(Package):
 
         return True if length <= self.MAX_LENGTH and diameter <= self.MAX_DIAMETER \
                     and volume <= self.MAX_VOLUME else False
+
+class EnvelopePackage(Package):
+
+    MIN_WIDTH = 11.0
+    MIN_LENGTH = 16.0
+    MAX_WIDTH = 60.0
+    MAX_LENGTH = 60.0
+
+    def __init__(self):
+        Package.__init__(self,Package.FORMAT_ENVELOPE)
+    
+    def add_item(self, width, length, weight):
+        return self.items.append(EnvelopeItem(width,length,weight))
+    
+    def get_dimensions(self):
+        width = max(list(map(lambda i: i.width, self.items)) + [self.MIN_WIDTH])
+        length = max(list(map(lambda i: i.length, self.items)) + [self.MIN_LENGTH])
+        return (width, length)
+    
+    def is_valid(self):
+        width, length = self.get_dimensions()
+        return True if width <= self.MAX_WIDTH and length <= self.MAX_LENGTH else False

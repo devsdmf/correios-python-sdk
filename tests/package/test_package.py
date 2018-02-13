@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from correios.package import Package, BoxPackage, CylinderPackage
+from correios.package import Package, BoxPackage, CylinderPackage, EnvelopePackage
 
 class TestPackage(unittest.TestCase):
 
@@ -309,4 +309,117 @@ class TestCylinderPackage(unittest.TestCase):
     def test_check_for_valid_cylinder_package_with_exceeded_volume(self):
         package = CylinderPackage()
         package.add_item(102.0,50.0,1.0)
+        self.assertFalse(package.is_valid())
+
+class TestEnvelopePackage(unittest.TestCase):
+
+    def setUp(self):
+        pass
+    
+    def test_create_envelope_package(self):
+        package = EnvelopePackage()
+        self.assertEqual(Package.FORMAT_ENVELOPE,package.get_format())
+    
+    def test_add_single_item_to_envelope_package(self):
+        width = 11.0
+        length = 20.0
+        weight = 0.3
+
+        package = EnvelopePackage()
+        package.add_item(width,length,weight)
+
+        self.assertTrue(package.has_items())
+        self.assertEqual(width,package.get_items()[0].width)
+        self.assertEqual(length,package.get_items()[0].length)
+        self.assertEqual(weight,package.get_items()[0].weight)
+    
+    def test_add_multiple_items_to_envelope_package(self):
+        width0 = 11.0
+        length0 = 20.0
+        weight0 = 0.3
+
+        width1 = 15.0
+        length1 = 25.0
+        weight1 = 0.5
+
+        package = EnvelopePackage()
+        package.add_item(width0,length0,weight0)
+        package.add_item(width1,length1,weight1)
+
+        self.assertTrue(package.has_items())
+
+        self.assertEqual(width0,package.get_items()[0].width)
+        self.assertEqual(length0,package.get_items()[0].length)
+        self.assertEqual(weight0,package.get_items()[0].weight)
+
+        self.assertEqual(width1,package.get_items()[1].width)
+        self.assertEqual(length1,package.get_items()[1].length)
+        self.assertEqual(weight1,package.get_items()[1].weight)
+    
+    def test_get_dimensions_for_single_item_envelope_package_with_minimum_dimensions(self):
+        width = 5.0
+        length = 10.0
+
+        package = EnvelopePackage()
+        package.add_item(width,length,0.3)
+
+        dimensions = package.get_dimensions()
+        self.assertTupleEqual(dimensions,(EnvelopePackage.MIN_WIDTH,EnvelopePackage.MIN_LENGTH))
+    
+    def test_get_dimensions_for_single_item_envelope_package_with_dimensions_over_the_minimum(self):
+        width = 25.0
+        length = 40.0
+
+        package = EnvelopePackage()
+        package.add_item(width,length,0.5)
+
+        dimensions = package.get_dimensions()
+        self.assertTupleEqual(dimensions,(width,length))
+    
+    def test_get_dimensions_for_multiple_items_envelope_package_with_minimum_dimensions(self):
+        width0 = 5.0
+        length0 = 5.0
+
+        width1 = 10.0
+        length1 = 10.0
+
+        package = EnvelopePackage()
+        package.add_item(width0,length0,0.5)
+        package.add_item(width1,length1,0.8)
+
+        dimensions = package.get_dimensions()
+        self.assertTupleEqual(dimensions,(EnvelopePackage.MIN_WIDTH,EnvelopePackage.MIN_LENGTH))
+    
+    def test_get_dimensions_for_multiple_items_envelope_package_with_dimensions_over_the_minimum(self):
+        width0 = 20.0
+        length0 = 10.0
+
+        width1 = 10.0
+        length1 = 25.0
+
+        package = EnvelopePackage()
+        package.add_item(width0,length0,0.5)
+        package.add_item(width1,length1,0.8)
+
+        dimensions = package.get_dimensions()
+        self.assertTupleEqual(dimensions,(width0,length1))
+    
+    def test_get_weight_of_envelope_package(self):
+        weight0 = 4.0
+        weight1 = 9.0
+
+        package = EnvelopePackage()
+        package.add_item(5.0,5.0,weight0)
+        package.add_item(15.0,10.0,weight1)
+
+        self.assertEqual(package.get_weight(),weight0 + weight1)
+    
+    def test_check_for_valid_envelope_package_with_valid_dimensions(self):
+        package = EnvelopePackage()
+        package.add_item(13.0,25.0,0.5)
+        self.assertTrue(package.is_valid())
+    
+    def test_check_for_valid_envelope_package_with_exceeded_dimensions(self):
+        package = EnvelopePackage()
+        package.add_item(65.0,70.0,0.5)
         self.assertFalse(package.is_valid())
