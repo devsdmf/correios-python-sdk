@@ -9,4 +9,4 @@ install:
   - pip install coveralls
 script:
   - python setup.py test
-  - coverage run --sorce=correios setup.py test
+  - coverage run --source=correios setup.py test
