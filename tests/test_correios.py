@@ -1,8 +1,7 @@
-
 # -*- coding: utf-8 -*-
 
 import unittest
-from correios.correios import Correios
+from correios import Correios
 
 class TestCorreios(unittest.TestCase):
 

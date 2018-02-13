@@ -19,8 +19,8 @@ class TestRunner(Command):
         import unittest
         runner = unittest.runner.TextTestRunner()
         test_loader = unittest.TestLoader()
-        test = test_loader.discover('tests')
-        runner.run(test)
+        tests = test_loader.discover('tests', pattern='text_*.py')
+        runner.run(tests)
 
 setup(
     name = 'correios-sdk',
