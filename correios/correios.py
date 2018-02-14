@@ -26,7 +26,6 @@ class Correios(object):
 
     def __init__(self):
         self.credentials = None
-        self.requests = requests
     
     def set_credentials(self, user, password):
         self.credentials = CorporateCredentials(user,password)
@@ -50,7 +49,7 @@ class Correios(object):
             })
         
         payload.update(package.api_format())
-        response = self.requests.get(self.API_SHIPPING_RATE_ENDPOINT,payload)
+        response = requests.get(self.API_SHIPPING_RATE_ENDPOINT,payload)
 
         services = []
         root = xml.etree.ElementTree.fromstring(response.text)
