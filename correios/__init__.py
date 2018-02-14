@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 
-from .correios import Correios
+from .correios import Correios, ShippingRateResult, ShippingRateResultService

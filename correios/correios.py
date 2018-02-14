@@ -51,10 +51,10 @@ class Correios(object):
         payload.update(package.api_format())
         response = requests.get(self.API_SHIPPING_RATE_ENDPOINT,payload)
 
-        results = []
+        services = []
         root = xml.etree.ElementTree.fromstring(response.text)
         for service in root.findall('cServico'):
-            results.append(ShippingRateResultService(
+            services.append(ShippingRateResultService(
                 code = service.find('Codigo').text,
                 days = int(service.find('PrazoEntrega').text),
                 price = float(service.find('Valor').text.replace(',','.')),
@@ -68,21 +68,24 @@ class Correios(object):
                 additional_information = service.find('obsFim').text
             ))
         
-        return ShippingRateResult(origin,destination,package,results)
+        return ShippingRateResult(origin,destination,package,services)
 
 
 class ShippingRateResult(object):
 
-    def __init__(self, origin, destination, package, results):
+    def __init__(self, origin, destination, package, services):
         self.origin = origin
         self.destination = destination
         self.package = package
-        self.results = results
-        self.error = False
+        self.services = services
+        self.errors = False
 
-        for result in results:
-            if not result.is_success():
-                self.error = True
+        for service in services:
+            if not service.is_success():
+                self.errors = True
+    
+    def has_errors(self):
+        return self.errors
 
 class ShippingRateResultService(object):
     
@@ -90,8 +93,8 @@ class ShippingRateResultService(object):
                 declared_value_cost = 0.0, home_delivery = True, saturday_delivery = False, 
                 error_code = 0, error_message = '', additional_information = None):
         self.code = code
-        self.price = float(price)
         self.days = int(days)
+        self.price = float(price)
         self.prices = (
             float(price - in_hands_cost - delivery_notification_cost - declared_value_cost),
             float(in_hands_cost),
