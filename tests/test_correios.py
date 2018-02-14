@@ -1,16 +1,108 @@
 # -*- coding: utf-8 -*-
 
+import os
 import unittest
+from unittest.mock import patch
 from correios import Correios, ShippingRateResult, ShippingRateResultService
 from correios.package import *
+
+RESOURCES_DIR = os.path.dirname(os.path.realpath(__file__)) + '/resources'
+
+class MockResponse(object):
+    def __init__(self, text):
+        self.text = text
+
+class MockRequests(object):
+    
+    def get_shipping_rates_single_service_success(url,payload):
+        fname = 'mock_correios_get_shipping_rate_single_service_result_success.xml'
+        with open(RESOURCES_DIR + '/' + fname,'r') as f:
+            r = MockResponse(f.read())
+        return r
+    
+    def get_shipping_rates_multiple_service_success(url,payload):
+        fname = 'mock_correios_get_shipping_rate_multiple_service_result_success.xml'
+        with open(RESOURCES_DIR + '/' + fname,'r') as f:
+            r = MockResponse(f.read())
+        return r
+
+    def get_shipping_rates_single_service_error(url,payload):
+        fname = 'mock_correios_get_shipping_rate_single_service_error.xml'
+        with open(RESOURCES_DIR + '/' + fname,'r') as f:
+            r = MockResponse(f.read())
+        return r
+    
+    def get_shipping_rates_multiple_service_error(url,payload):
+        fname = 'mock_correios_get_shipping_rate_multiple_service_error.xml'
+        with open(RESOURCES_DIR + '/' + fname,'r') as f:
+            r = MockResponse(f.read())
+        return r
+        
 
 class TestCorreios(unittest.TestCase):
 
     def setUp(self):
         pass
     
-    def test_get_shipping_rates(self):
-        pass
+    @patch('requests.get', new=MockRequests.get_shipping_rates_single_service_success)
+    def test_correios_get_shipping_rates_single_service_success(self):
+        correios = Correios()
+        
+        package = BoxPackage()
+        package.add_item(1.0,2.0,3.0,0.3)
+
+        origin = '10000000'
+        destination = '30000000'
+
+        result = correios.get_shipping_rates(origin,destination,package,[Correios.SERVICE_PAC])
+
+        self.assertFalse(result.has_errors())
+        self.assertEqual(origin,result.origin)
+        self.assertEqual(destination,result.destination)
+    
+    @patch('requests.get', new=MockRequests.get_shipping_rates_multiple_service_success)
+    def test_correios_get_shipping_rates_multiple_service_success(self):
+        correios = Correios()
+
+        package = BoxPackage()
+        package.add_item(1.0,2.0,3.0,0.3)
+
+        origin = '10000000'
+        destination = '30000000'
+
+        result = correios.get_shipping_rates(origin,destination,package,[Correios.SERVICE_PAC,Correios.SERVICE_SEDEX])
+
+        self.assertFalse(result.has_errors())
+        self.assertEqual(origin,result.origin)
+        self.assertEqual(destination,result.destination)
+    
+    @patch('requests.get', new=MockRequests.get_shipping_rates_single_service_error)
+    def test_correios_get_shipping_rates_single_service_errors(self):
+        correios = Correios()
+
+        package = BoxPackage()
+        package.add_item(1.0,2.0,3.0,0.3)
+
+        origin = '10000000'
+        destination = '30000000'
+
+        result = correios.get_shipping_rates(origin,destination,package,[Correios.SERVICE_PAC])
+
+        self.assertTrue(result.has_errors())
+    
+    @patch('requests.get', new=MockRequests.get_shipping_rates_multiple_service_error)
+    def test_correios_get_shipping_rates_multiple_service_errors(self):
+        correios = Correios()
+
+        package = BoxPackage()
+        package.add_item(1.0,2.0,3.0,0.3)
+
+        origin = '10000000'
+        destination = '30000000'
+
+        result = correios.get_shipping_rates(origin,destination,package,[Correios.SERVICE_PAC,Correios.SERVICE_SEDEX])
+
+        self.assertTrue(result.has_errors())
 
 class ShippingRateResultTest(unittest.TestCase):
 

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<Servicos>
+    <cServico>
+        <Codigo>04510</Codigo>
+        <Valor>22,90</Valor>
+        <PrazoEntrega>5</PrazoEntrega>
+        <ValorSemAdicionais>16,10</ValorSemAdicionais>
+        <ValorMaoPropria>5,90</ValorMaoPropria>
+        <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento>
+        <ValorValorDeclarado>0,90</ValorValorDeclarado>
+        <EntregaDomiciliar>S</EntregaDomiciliar>
+        <EntregaSabado>N</EntregaSabado>
+        <Erro>0</Erro>
+        <MsgErro></MsgErro>
+        <obsFim></obsFim>
+    </cServico>
+    <cServico>
+        <Codigo>04014</Codigo>
+        <Valor>22,90</Valor>
+        <PrazoEntrega>1</PrazoEntrega>
+        <ValorSemAdicionais>16,10</ValorSemAdicionais>
+        <ValorMaoPropria>5,90</ValorMaoPropria>
+        <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento>
+        <ValorValorDeclarado>0,90</ValorValorDeclarado>
+        <EntregaDomiciliar>S</EntregaDomiciliar>
+        <EntregaSabado>S</EntregaSabado>
+        <Erro>0</Erro>
+        <MsgErro></MsgErro>
+        <obsFim></obsFim>
+    </cServico>
+</Servicos>
