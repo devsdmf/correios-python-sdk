@@ -104,6 +104,40 @@ class TestCorreios(unittest.TestCase):
 
         self.assertTrue(result.has_errors())
 
+    @patch('requests.get', new=MockRequests.get_shipping_rates_single_service_success)
+    def test_correios_get_shipping_rates_single_service_success_with_contract(self):
+        correios = Correios()
+        correios.set_credentials('someuser','somepass')
+        
+        package = BoxPackage()
+        package.add_item(1.0,2.0,3.0,0.3)
+
+        origin = '10000000'
+        destination = '30000000'
+
+        result = correios.get_shipping_rates(origin,destination,package,[Correios.SERVICE_PAC])
+
+        self.assertFalse(result.has_errors())
+        self.assertEqual(origin,result.origin)
+        self.assertEqual(destination,result.destination)
+    
+    @patch('requests.get', new=MockRequests.get_shipping_rates_multiple_service_success)
+    def test_correios_get_shipping_rates_multiple_service_success_with_contract(self):
+        correios = Correios()
+        correios.set_credentials('someuser','somepass')
+
+        package = BoxPackage()
+        package.add_item(1.0,2.0,3.0,0.3)
+
+        origin = '10000000'
+        destination = '30000000'
+
+        result = correios.get_shipping_rates(origin,destination,package,[Correios.SERVICE_PAC,Correios.SERVICE_SEDEX])
+
+        self.assertFalse(result.has_errors())
+        self.assertEqual(origin,result.origin)
+        self.assertEqual(destination,result.destination)
+
 class ShippingRateResultTest(unittest.TestCase):
 
     def setUp(self):
