@@ -44,7 +44,7 @@ class BoxPackage(Package):
 
     MIN_HEIGHT = 2.0
     MIN_WIDTH  = 11.0
-    MIN_DEPTH  = 6.0
+    MIN_DEPTH  = 16.0
     MAX_HEIGHT = 105.0
     MAX_WIDTH  = 105.0
     MAX_DEPTH  = 105.0
