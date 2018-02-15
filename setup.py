@@ -24,7 +24,7 @@ class TestRunner(Command):
 
 setup(
     name = 'correios-sdk',
-    version = '0.0.1',
+    version = '1.0.0',
 
     description = 'Correios\'s unofficial SDK for Python',
     keywords = 'correios shipping sdk',
@@ -34,7 +34,7 @@ setup(
     license = 'MIT',
 
     classifiers = [
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 5 - Production/Stable',
 
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Libraries :: Python Modules',
@@ -42,10 +42,13 @@ setup(
         'License :: OSI Approved :: MIT License',
 
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3 :: Only'
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
 
     packages = ['correios'],
-    install_requires = [],
+    install_requires = ['requests'],
     cmdclass = {'test': TestRunner}
 )
