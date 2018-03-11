@@ -15,7 +15,7 @@ Currently the only supported task is the shipping price calculator, but feel fre
 
 ### From PyPi
 ```
-$ pip install correios-sdk
+$ pip install correios-python-sdk
 ```
 
 ### From source

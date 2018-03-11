@@ -23,7 +23,7 @@ class TestRunner(Command):
         runner.run(tests)
 
 setup(
-    name = 'correios-sdk',
+    name = 'correios-python-sdk',
     version = '1.0.0',
 
     description = 'Correios\'s unofficial SDK for Python',
@@ -48,7 +48,7 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
 
-    packages = ['correios'],
+    packages = find_packages(),
     install_requires = ['requests'],
     cmdclass = {'test': TestRunner}
 )
