@@ -24,12 +24,12 @@ class TestRunner(Command):
 
 setup(
     name = 'correios-python-sdk',
-    version = '1.0.1',
+    version = '1.0.2',
 
     description = 'Correios\'s unofficial SDK for Python',
     keywords = ['correios','shipping','sdk'],
     url = 'https://github.com/devsdmf/correios-python-sdk',
-    download_url = 'https://github.com/devsdmf/correios-python-sdk/archive/v1.0.1.tar.gz',
+    download_url = 'https://github.com/devsdmf/correios-python-sdk/archive/v1.0.2.tar.gz',
     author = 'devsdmf',
     author_email = 'devsdmf@gmail.com',
     license = 'MIT',
