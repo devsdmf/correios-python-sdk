@@ -19,7 +19,7 @@ class TestRunner(Command):
         import unittest
         runner = unittest.runner.TextTestRunner()
         test_loader = unittest.TestLoader()
-        tests = test_loader.discover('tests', pattern='text_*.py')
+        tests = test_loader.discover('tests', pattern='test_*.py')
         runner.run(tests)
 
 setup(

@@ -24,7 +24,6 @@
         <ValorValorDeclarado>0,90</ValorValorDeclarado>
         <EntregaDomiciliar>S</EntregaDomiciliar>
         <EntregaSabado>S</EntregaSabado>
-        <Erro>0</Erro>
         <MsgErro></MsgErro>
         <obsFim></obsFim>
     </cServico>
