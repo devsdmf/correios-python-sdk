@@ -63,7 +63,7 @@ class Correios(object):
                 declared_value_cost = float(service.find('ValorValorDeclarado').text.replace(',','.')),
                 home_delivery = True if service.find('EntregaDomiciliar').text == 'S' else False,
                 saturday_delivery = True if service.find('EntregaSabado').text == 'S' else False,
-                error_code = int(service.find('Erro').text) if service.find('Erro') is not None else 0,
+                error_code = int(service.find('Erro').text) if service.find('Erro') is not None and service.find('Erro').text is not None else 0,
                 error_message = service.find('MsgErro').text,
                 additional_information = service.find('obsFim').text
             ))
