@@ -52,7 +52,7 @@ class TestPackage(unittest.TestCase):
     
     def test_get_weight_from_empty_package(self):
         package = Package()
-        self.assertEqual(0,package.get_weight())
+        self.assertEqual(Package.MIN_WEIGHT,package.get_weight())
     
     def test_abstract_is_valid_raises_exception(self):
         package = Package()
