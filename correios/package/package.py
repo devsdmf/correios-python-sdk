@@ -9,6 +9,9 @@ class Package(object):
     FORMAT_CYLINDER = 2
     FORMAT_ENVELOPE = 3
 
+    MIN_WEIGHT = 0.005
+    MAX_WEIGHT = 30.0
+
     def __init__(self, format = None):
         self.format = format or self.FORMAT_BOX
         self.items = []
@@ -32,7 +35,8 @@ class Package(object):
         raise NotImplementedError
     
     def get_weight(self):
-        return reduce(lambda s,i: s + i.weight, self.items, 0)
+        weight = reduce(lambda s,i: s + i.weight, self.items, 0)
+        return weight if weight >= self.MIN_WEIGHT else self.MIN_WEIGHT
     
     def is_valid(self):
         raise NotImplementedError
@@ -83,9 +87,11 @@ class BoxPackage(Package):
     def is_valid(self):
         height, width, depth = self.get_dimensions()
         volume = height + width + depth
+        weight = self.get_weight()
 
         return True if height <= self.MAX_HEIGHT and width <= self.MAX_WIDTH \
-                    and depth <= self.MAX_DEPTH and volume <= self.MAX_VOLUME else False
+                    and depth <= self.MAX_DEPTH and volume <= self.MAX_VOLUME \
+                    and weight <= self.MAX_WEIGHT else False
     
     def api_format(self):
         if self.is_valid():
@@ -122,9 +128,10 @@ class CylinderPackage(Package):
     def is_valid(self):
         length, diameter = self.get_dimensions()
         volume = length + (2 * diameter)
+        weight =self.get_weight()
 
         return True if length <= self.MAX_LENGTH and diameter <= self.MAX_DIAMETER \
-                    and volume <= self.MAX_VOLUME else False
+                    and volume <= self.MAX_VOLUME and weight <= self.MAX_WEIGHT else False
     
     def api_format(self):
         if self.is_valid():
